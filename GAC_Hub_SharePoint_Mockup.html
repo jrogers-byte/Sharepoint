@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAC Hub — Company Intranet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ DESIGN TOKENS ============ */
+  :root {
+    --gac-blue: #0040A0;
+    --gac-blue-dark: #002E70;
+    --gac-blue-light: #E8F0FA;
+    --gac-blue-mid: #4D7BC4;
+    --gac-red: #F03030;
+    --gac-red-dark: #C42020;
+    --gac-red-light: #FEEAEA;
+    --gac-amber: #F59E0B;
+    --gac-amber-light: #FEF3C7;
+    --gac-green: #10B981;
+    --gac-green-light: #D1FAE5;
+    --gac-gray-50: #F8FAFC;
+    --gac-gray-100: #F1F5F9;
+    --gac-gray-200: #E2E8F0;
+    --gac-gray-300: #CBD5E1;
+    --gac-gray-400: #94A3B8;
+    --gac-gray-500: #64748B;
+    --gac-gray-600: #475569;
+    --gac-gray-700: #334155;
+    --gac-gray-800: #1E293B;
+    --gac-gray-900: #0F172A;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,.06);
+    --shadow-md: 0 2px 4px rgba(15,23,42,.06), 0 4px 12px rgba(15,23,42,.08);
+    --shadow-lg: 0 4px 8px rgba(15,23,42,.06), 0 12px 24px rgba(15,23,42,.10);
+    --shadow-xl: 0 8px 16px rgba(15,23,42,.08), 0 20px 40px rgba(15,23,42,.12);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--gac-gray-50);
+    color: var(--gac-gray-800);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ M365-STYLE SUITE BAR ============ */
+  .suite-bar {
+    background: var(--gac-blue-dark);
+    color: #fff;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 0 rgba(255,255,255,.05);
+  }
+  .suite-bar-left { display: flex; align-items: center; gap: 16px; flex: 1; }
+  .waffle {
+    width: 36px; height: 36px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background .15s;
+  }
+  .waffle:hover { background: rgba(255,255,255,.1); }
+  .waffle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 4px);
+    grid-template-rows: repeat(3, 4px);
+    gap: 2px;
+  }
+  .waffle-dot { background: #fff; border-radius: 1px; width: 4px; height: 4px; }
+  .suite-brand { font-weight: 700; font-size: 15px; letter-spacing: -.01em; }
+  .suite-brand .gac { color: #fff; }
+  .suite-brand .hub { color: var(--gac-red); }
+  .suite-search {
+    flex: 1; max-width: 600px;
+    position: relative;
+  }
+  .suite-search input {
+    width: 100%; height: 32px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: var(--radius-sm);
+    padding: 0 12px 0 36px;
+    color: #fff; font-size: 13px;
+    font-family: inherit;
+    transition: all .15s;
+  }
+  .suite-search input::placeholder { color: rgba(255,255,255,.6); }
+  .suite-search input:focus {
+    background: #fff; color: var(--gac-gray-800);
+    outline: none; border-color: var(--gac-red);
+  }
+  .suite-search input:focus::placeholder { color: var(--gac-gray-400); }
+  .suite-search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: rgba(255,255,255,.7); pointer-events: none;
+  }
+  .suite-search input:focus + .suite-search-icon { color: var(--gac-gray-500); }
+  .suite-bar-right { display: flex; align-items: center; gap: 8px; }
+  .suite-icon-btn {
+    width: 36px; height: 36px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; cursor: pointer; transition: background .15s;
+    position: relative;
+  }
+  .suite-icon-btn:hover { background: rgba(255,255,255,.1); }
+  .suite-icon-btn .badge {
+    position: absolute; top: 4px; right: 4px;
+    background: var(--gac-red); color: #fff;
+    font-size: 10px; font-weight: 700;
+    width: 16px; height: 16px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--gac-blue-dark);
+  }
+  .suite-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gac-red) 0%, var(--gac-red-dark) 100%);
+    color: #fff; font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,.2);
+  }
+
+  /* ============ SITE HEADER ============ */
+  .site-header {
+    background: #fff;
+    border-bottom: 1px solid var(--gac-gray-200);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .site-identity { display: flex; align-items: center; gap: 16px; }
+  .site-logo {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--gac-blue) 0%, var(--gac-blue-dark) 100%);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 18px;
+    letter-spacing: -.02em;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+  }
+  .site-logo::after {
+    content: ""; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 4px; background: var(--gac-red);
+  }
+  .site-title h1 {
+    font-size: 18px; font-weight: 700; color: var(--gac-gray-900);
+    letter-spacing: -.01em; line-height: 1.1;
+  }
+  .site-title p {
+    font-size: 12px; color: var(--gac-gray-500);
+    font-weight: 500; margin-top: 2px;
+  }
+  .site-actions { display: flex; gap: 8px; align-items: center; }
+  .pill-btn {
+    padding: 6px 12px; border-radius: 100px;
+    background: var(--gac-gray-100); color: var(--gac-gray-700);
+    font-size: 12px; font-weight: 600;
+    border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    transition: all .15s;
+    font-family: inherit;
+  }
+  .pill-btn:hover { background: var(--gac-gray-200); color: var(--gac-gray-900); }
+  .pill-btn.primary { background: var(--gac-blue); color: #fff; }
+  .pill-btn.primary:hover { background: var(--gac-blue-dark); }
+
+  /* ============ SITE NAVIGATION ============ */
+  .site-nav {
+    background: #fff;
+    border-bottom: 1px solid var(--gac-gray-200);
+    padding: 0 32px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    position: sticky;
+    top: 48px;
+    z-index: 90;
+  }
+  .nav-item {
+    padding: 12px 16px;
+    font-size: 13px; font-weight: 600;
+    color: var(--gac-gray-600);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all .15s;
+    white-space: nowrap;
+    background: none; border-top: none; border-left: none; border-right: none;
+    font-family: inherit;
+  }
+  .nav-item:hover { color: var(--gac-blue); }
+  .nav-item.active {
+    color: var(--gac-blue);
+    border-bottom-color: var(--gac-red);
+  }
+
+  /* ============ MAIN CONTAINER ============ */
+  .main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 32px 64px;
+  }
+
+  /* ============ PAGE SYSTEM ============ */
+  .page { display: none; animation: fadeIn .25s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ HERO WEB PART ============ */
+  .hero {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin-bottom: 24px;
+    min-height: 320px;
+    background:
+      linear-gradient(135deg, rgba(0,46,112,.92) 0%, rgba(0,64,160,.78) 50%, rgba(240,48,48,.65) 100%),
+      repeating-linear-gradient(45deg, transparent 0 40px, rgba(255,255,255,.03) 40px 41px),
+      var(--gac-blue-dark);
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
+    color: #fff;
+    box-shadow: var(--shadow-lg);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,.08) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(240,48,48,.15) 0%, transparent 50%);
+  }
+  .hero-pattern {
+    position: absolute; top: 0; right: 0; bottom: 0; width: 50%;
+    opacity: .15;
+    background-image:
+      linear-gradient(135deg, transparent 48%, #fff 49%, #fff 51%, transparent 52%);
+    background-size: 30px 30px;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 700px; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.15);
+    backdrop-filter: blur(8px);
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .08em;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,.2);
+  }
+  .hero-eyebrow .pulse {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gac-red);
+    box-shadow: 0 0 0 0 rgba(240,48,48,.7);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(240,48,48,.7); }
+    70% { box-shadow: 0 0 0 10px rgba(240,48,48,0); }
+    100% { box-shadow: 0 0 0 0 rgba(240,48,48,0); }
+  }
+  .hero h2 {
+    font-size: 38px; font-weight: 800;
+    letter-spacing: -.025em; line-height: 1.05;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    font-size: 16px; opacity: .92;
+    max-width: 540px; line-height: 1.5;
+  }
+  .hero-actions { display: flex; gap: 12px; margin-top: 24px; }
+  .hero-btn {
+    padding: 10px 20px; border-radius: var(--radius-md);
+    font-weight: 700; font-size: 13px;
+    border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: inherit;
+    transition: all .2s;
+  }
+  .hero-btn.primary {
+    background: #fff; color: var(--gac-blue-dark);
+  }
+  .hero-btn.primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .hero-btn.ghost {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.3);
+    backdrop-filter: blur(8px);
+  }
+  .hero-btn.ghost:hover { background: rgba(255,255,255,.2); }
+  .hero-stats {
+    position: absolute; top: 32px; right: 32px;
+    display: flex; gap: 24px; z-index: 2;
+  }
+  .hero-stat {
+    text-align: right;
+    padding-right: 16px;
+    border-right: 2px solid rgba(255,255,255,.2);
+  }
+  .hero-stat:last-child { border-right: none; padding-right: 0; }
+  .hero-stat-value {
+    font-size: 28px; font-weight: 800;
+    letter-spacing: -.02em; line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .08em;
+    opacity: .85; margin-top: 4px;
+  }
+
+  /* ============ TWO COLUMN LAYOUT ============ */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 1024px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+
+  /* ============ WEB PART (CARD CONTAINER) ============ */
+  .webpart {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gac-gray-200);
+    margin-bottom: 24px;
+  }
+  .webpart:last-child { margin-bottom: 0; }
+  .webpart-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .webpart-title {
+    font-size: 16px; font-weight: 700;
+    color: var(--gac-gray-900);
+    letter-spacing: -.01em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .webpart-title .accent-bar {
+    width: 4px; height: 20px;
+    background: var(--gac-red);
+    border-radius: 2px;
+  }
+  .webpart-link {
+    font-size: 12px; font-weight: 600;
+    color: var(--gac-blue);
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px;
+    cursor: pointer;
+  }
+  .webpart-link:hover { color: var(--gac-blue-dark); text-decoration: underline; }
+
+  /* ============ NEWS GRID ============ */
+  .news-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 768px) {
+    .news-grid { grid-template-columns: 1fr; }
+  }
+  .news-card {
+    background: var(--gac-gray-50);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .2s;
+    border: 1px solid var(--gac-gray-200);
+    display: flex; flex-direction: column;
+  }
+  .news-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--gac-blue-mid);
+  }
+  .news-card.featured { grid-row: span 2; }
+  .news-image {
+    height: 140px;
+    background: linear-gradient(135deg, var(--gac-blue) 0%, var(--gac-blue-dark) 100%);
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,.4);
+  }
+  .news-card.featured .news-image { height: 220px; }
+  .news-image.var-1 {
+    background:
+      radial-gradient(circle at 30% 40%, rgba(255,255,255,.15) 0%, transparent 50%),
+      linear-gradient(135deg, var(--gac-blue) 0%, var(--gac-blue-dark) 100%);
+  }
+  .news-image.var-2 {
+    background:
+      radial-gradient(circle at 70% 60%, rgba(240,48,48,.3) 0%, transparent 50%),
+      linear-gradient(135deg, var(--gac-blue-dark) 0%, #1a1a3a 100%);
+  }
+  .news-image.var-3 {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(245,158,11,.4) 0%, transparent 60%),
+      linear-gradient(135deg, var(--gac-gray-700) 0%, var(--gac-gray-900) 100%);
+  }
+  .news-image.var-4 {
+    background:
+      radial-gradient(circle at 30% 70%, rgba(16,185,129,.3) 0%, transparent 50%),
+      linear-gradient(135deg, var(--gac-blue) 0%, var(--gac-blue-dark) 100%);
+  }
+  .news-cat {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(0,0,0,.5);
+    backdrop-filter: blur(8px);
+    color: #fff; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .08em;
+    padding: 4px 10px; border-radius: 100px;
+  }
+  .news-cat.safety { background: var(--gac-red); }
+  .news-cat.ops { background: var(--gac-blue); }
+  .news-cat.hr { background: var(--gac-amber); }
+  .news-cat.event { background: var(--gac-green); }
+  .news-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+  .news-body h4 {
+    font-size: 15px; font-weight: 700;
+    color: var(--gac-gray-900);
+    line-height: 1.3; margin-bottom: 8px;
+    letter-spacing: -.01em;
+  }
+  .news-card.featured .news-body h4 { font-size: 20px; }
+  .news-body p {
+    font-size: 12px; color: var(--gac-gray-600);
+    line-height: 1.5; flex: 1;
+  }
+  .news-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--gac-gray-500);
+    margin-top: 12px; font-weight: 500;
+  }
+
+  /* ============ QUICK LINKS GRID ============ */
+  .quick-links {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 768px) {
+    .quick-links { grid-template-columns: repeat(3, 1fr); }
+  }
+  .quick-link {
+    background: var(--gac-gray-50);
+    border-radius: var(--radius-md);
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    border: 1px solid var(--gac-gray-200);
+    text-decoration: none;
+    color: inherit;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px;
+  }
+  .quick-link:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--gac-blue-mid);
+  }
+  .quick-link-icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700;
+    font-size: 18px;
+  }
+  .ql-bg-1 { background: linear-gradient(135deg, var(--gac-blue), var(--gac-blue-dark)); }
+  .ql-bg-2 { background: linear-gradient(135deg, var(--gac-red), var(--gac-red-dark)); }
+  .ql-bg-3 { background: linear-gradient(135deg, var(--gac-amber), #D97706); }
+  .ql-bg-4 { background: linear-gradient(135deg, var(--gac-green), #059669); }
+  .ql-bg-5 { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+  .ql-bg-6 { background: linear-gradient(135deg, var(--gac-gray-700), var(--gac-gray-900)); }
+  .ql-bg-7 { background: linear-gradient(135deg, #06B6D4, #0E7490); }
+  .ql-bg-8 { background: linear-gradient(135deg, #EC4899, #BE185D); }
+  .quick-link-label {
+    font-size: 12px; font-weight: 600;
+    color: var(--gac-gray-700); line-height: 1.3;
+  }
+
+  /* ============ ALERT BANNER ============ */
+  .alert-banner {
+    background: linear-gradient(90deg, var(--gac-red) 0%, var(--gac-red-dark) 100%);
+    color: #fff; padding: 12px 20px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-md);
+    position: relative; overflow: hidden;
+  }
+  .alert-banner::before {
+    content: ""; position: absolute; right: 0; top: 0; bottom: 0;
+    width: 200px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.1));
+  }
+  .alert-icon {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,.2);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-weight: 800;
+  }
+  .alert-text { flex: 1; font-size: 13px; font-weight: 600; }
+  .alert-text strong { font-weight: 800; margin-right: 6px; }
+  .alert-action {
+    color: #fff; text-decoration: underline;
+    font-weight: 700; font-size: 12px;
+    cursor: pointer; white-space: nowrap;
+  }
+
+  /* ============ SIDEBAR WEBPARTS ============ */
+  .sidebar-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gac-gray-200);
+    margin-bottom: 16px;
+  }
+  .sidebar-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--gac-gray-900);
+    text-transform: uppercase; letter-spacing: .04em;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sidebar-title-bar {
+    width: 4px; height: 16px;
+    background: var(--gac-red); border-radius: 2px;
+  }
+
+  /* ============ EVENT LIST ============ */
+  .event-item {
+    display: flex; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gac-gray-100);
+  }
+  .event-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .event-date {
+    width: 48px; flex-shrink: 0;
+    background: var(--gac-blue-light);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    padding: 6px 0;
+  }
+  .event-date .month {
+    font-size: 10px; font-weight: 700;
+    color: var(--gac-red);
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .event-date .day {
+    font-size: 18px; font-weight: 800;
+    color: var(--gac-blue-dark); line-height: 1;
+    margin-top: 2px;
+  }
+  .event-info { flex: 1; min-width: 0; }
+  .event-info h5 {
+    font-size: 13px; font-weight: 700;
+    color: var(--gac-gray-900);
+    line-height: 1.3; margin-bottom: 4px;
+  }
+  .event-info p {
+    font-size: 11px; color: var(--gac-gray-500);
+    font-weight: 500;
+  }
+
+  /* ============ PEOPLE LIST ============ */
+  .person-item {
+    display: flex; gap: 10px; align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gac-gray-100);
+  }
+  .person-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .person-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    color: #fff; font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pa-1 { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+  .pa-2 { background: linear-gradient(135deg, #06B6D4, #0E7490); }
+  .pa-3 { background: linear-gradient(135deg, #EC4899, #BE185D); }
+  .pa-4 { background: linear-gradient(135deg, #F59E0B, #D97706); }
+  .pa-5 { background: linear-gradient(135deg, #10B981, #059669); }
+  .person-info { flex: 1; min-width: 0; }
+  .person-info h5 {
+    font-size: 13px; font-weight: 700;
+    color: var(--gac-gray-900); line-height: 1.2;
+  }
+  .person-info p {
+    font-size: 11px; color: var(--gac-gray-500);
+    font-weight: 500; margin-top: 2px;
+  }
+
+  /* ============ DOC LIST ============ */
+  .doc-item {
+    display: flex; gap: 12px; align-items: center;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .doc-item:hover { background: var(--gac-gray-50); }
+  .doc-icon {
+    width: 32px; height: 32px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 10px;
+    flex-shrink: 0;
+  }
+  .di-word { background: #2B579A; }
+  .di-excel { background: #217346; }
+  .di-ppt { background: #B7472A; }
+  .di-pdf { background: #C42020; }
+  .doc-info { flex: 1; min-width: 0; }
+  .doc-info h5 {
+    font-size: 12px; font-weight: 600;
+    color: var(--gac-gray-900);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .doc-info p {
+    font-size: 11px; color: var(--gac-gray-500);
+    margin-top: 2px;
+  }
+
+  /* ============ YARD GRID ============ */
+  .yard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .yard-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--gac-gray-200);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .yard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--gac-blue-mid);
+  }
+  .yard-header {
+    height: 80px;
+    background: linear-gradient(135deg, var(--gac-blue) 0%, var(--gac-blue-dark) 100%);
+    padding: 16px 20px;
+    color: #fff;
+    position: relative;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .yard-card:nth-child(2n) .yard-header {
+    background: linear-gradient(135deg, var(--gac-blue-dark) 0%, #1a1a3a 100%);
+  }
+  .yard-card:nth-child(3n) .yard-header {
+    background: linear-gradient(135deg, var(--gac-gray-700) 0%, var(--gac-gray-900) 100%);
+  }
+  .yard-state {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .12em;
+    opacity: .8;
+  }
+  .yard-name {
+    font-size: 18px; font-weight: 800;
+    letter-spacing: -.01em;
+  }
+  .yard-body { padding: 16px 20px; }
+  .yard-stats { display: flex; gap: 16px; margin-bottom: 12px; }
+  .yard-stat-mini { flex: 1; }
+  .yard-stat-mini .num {
+    font-size: 18px; font-weight: 800;
+    color: var(--gac-blue-dark);
+    letter-spacing: -.02em;
+  }
+  .yard-stat-mini .lbl {
+    font-size: 10px; font-weight: 600;
+    color: var(--gac-gray-500);
+    text-transform: uppercase; letter-spacing: .04em;
+    margin-top: 2px;
+  }
+  .yard-supervisor {
+    display: flex; align-items: center; gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--gac-gray-100);
+    font-size: 12px; color: var(--gac-gray-600);
+  }
+  .yard-supervisor .person-avatar {
+    width: 24px; height: 24px; font-size: 10px;
+  }
+
+  /* ============ PROJECT TABLE ============ */
+  .proj-table {
+    width: 100%; border-collapse: collapse;
+  }
+  .proj-table thead tr { border-bottom: 2px solid var(--gac-gray-200); }
+  .proj-table th {
+    text-align: left; padding: 12px 8px;
+    font-size: 11px; font-weight: 700;
+    color: var(--gac-gray-500);
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .proj-table td {
+    padding: 14px 8px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--gac-gray-100);
+  }
+  .proj-table tbody tr { cursor: pointer; transition: background .15s; }
+  .proj-table tbody tr:hover { background: var(--gac-gray-50); }
+  .proj-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600; color: var(--gac-blue-dark);
+    font-size: 12px;
+  }
+  .proj-name { font-weight: 600; color: var(--gac-gray-900); }
+  .proj-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  .proj-status .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .proj-status.active { background: var(--gac-green-light); color: #047857; }
+  .proj-status.active .dot { background: #10B981; }
+  .proj-status.planning { background: var(--gac-blue-light); color: var(--gac-blue-dark); }
+  .proj-status.planning .dot { background: var(--gac-blue); }
+  .proj-status.delayed { background: var(--gac-amber-light); color: #92400E; }
+  .proj-status.delayed .dot { background: var(--gac-amber); }
+  .proj-status.complete { background: var(--gac-gray-200); color: var(--gac-gray-700); }
+  .proj-status.complete .dot { background: var(--gac-gray-500); }
+  .progress-bar {
+    height: 6px;
+    background: var(--gac-gray-200);
+    border-radius: 100px;
+    overflow: hidden;
+    width: 80px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gac-blue), var(--gac-blue-dark));
+    border-radius: 100px;
+  }
+
+  /* ============ SAFETY ============ */
+  .safety-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .safety-tile {
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all .2s;
+    text-align: center;
+  }
+  .safety-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .safety-tile.danger {
+    background: linear-gradient(135deg, var(--gac-red) 0%, var(--gac-red-dark) 100%);
+    color: #fff;
+  }
+  .safety-tile.warning {
+    background: linear-gradient(135deg, var(--gac-amber) 0%, #D97706 100%);
+    color: #fff;
+  }
+  .safety-tile.info {
+    background: linear-gradient(135deg, var(--gac-blue) 0%, var(--gac-blue-dark) 100%);
+    color: #fff;
+  }
+  .safety-tile.success {
+    background: linear-gradient(135deg, var(--gac-green) 0%, #059669 100%);
+    color: #fff;
+  }
+  .safety-tile-icon {
+    font-size: 32px; margin-bottom: 12px;
+    width: 56px; height: 56px;
+    background: rgba(255,255,255,.2);
+    border-radius: var(--radius-md);
+    margin: 0 auto 16px;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  .safety-tile h4 {
+    font-size: 16px; font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .safety-tile p {
+    font-size: 12px; opacity: .9;
+    line-height: 1.4;
+  }
+  .safety-counter {
+    background: var(--gac-gray-50);
+    border: 1px solid var(--gac-gray-200);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative; overflow: hidden;
+  }
+  .safety-counter::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--gac-green), var(--gac-blue), var(--gac-red));
+  }
+  .safety-counter .big-num {
+    font-size: 64px; font-weight: 800;
+    color: var(--gac-green);
+    letter-spacing: -.04em; line-height: 1;
+  }
+  .safety-counter .label {
+    font-size: 14px; font-weight: 600;
+    color: var(--gac-gray-700);
+    margin-top: 8px;
+  }
+  .safety-counter .sub {
+    font-size: 12px; color: var(--gac-gray-500);
+    margin-top: 4px;
+  }
+
+  /* ============ PAGE HEADER ============ */
+  .page-header {
+    margin-bottom: 24px;
+  }
+  .page-header h2 {
+    font-size: 28px; font-weight: 800;
+    color: var(--gac-gray-900);
+    letter-spacing: -.02em; line-height: 1.1;
+  }
+  .page-header p {
+    font-size: 14px; color: var(--gac-gray-500);
+    margin-top: 6px;
+  }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--gac-gray-500);
+    margin-bottom: 12px; font-weight: 500;
+  }
+  .breadcrumb a { color: var(--gac-blue); cursor: pointer; text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb .sep { color: var(--gac-gray-300); }
+
+  /* ============ DEPT GRID ============ */
+  .dept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .dept-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    border: 1px solid var(--gac-gray-200);
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .dept-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--gac-blue);
+  }
+  .dept-card:nth-child(2n)::before { background: var(--gac-red); }
+  .dept-card:nth-child(3n)::before { background: var(--gac-amber); }
+  .dept-card:nth-child(4n)::before { background: var(--gac-green); }
+  .dept-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .dept-icon {
+    width: 48px; height: 48px;
+    border-radius: var(--radius-md);
+    background: var(--gac-blue-light);
+    color: var(--gac-blue-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 800;
+    margin-bottom: 16px;
+  }
+  .dept-card:nth-child(2n) .dept-icon {
+    background: var(--gac-red-light); color: var(--gac-red-dark);
+  }
+  .dept-card:nth-child(3n) .dept-icon {
+    background: var(--gac-amber-light); color: #92400E;
+  }
+  .dept-card:nth-child(4n) .dept-icon {
+    background: var(--gac-green-light); color: #047857;
+  }
+  .dept-card h4 {
+    font-size: 16px; font-weight: 700;
+    color: var(--gac-gray-900);
+    margin-bottom: 6px;
+    letter-spacing: -.01em;
+  }
+  .dept-card p {
+    font-size: 12px; color: var(--gac-gray-500);
+    line-height: 1.5;
+  }
+  .dept-meta {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gac-gray-100);
+    font-size: 11px; color: var(--gac-gray-500);
+    font-weight: 600;
+  }
+
+  /* ============ FOOTER ============ */
+  .site-footer {
+    background: var(--gac-blue-dark);
+    color: rgba(255,255,255,.7);
+    padding: 32px;
+    margin-top: 48px;
+    text-align: center;
+  }
+  .footer-grid {
+    max-width: 1400px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 768px) {
+    .footer-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .footer-col h5 {
+    color: #fff; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 12px;
+  }
+  .footer-col a {
+    display: block; padding: 4px 0;
+    color: rgba(255,255,255,.7);
+    font-size: 13px; text-decoration: none;
+    cursor: pointer;
+  }
+  .footer-col a:hover { color: #fff; }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.1);
+    padding-top: 24px;
+    font-size: 12px;
+    max-width: 1400px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom .demo-tag {
+    background: var(--gac-red);
+    color: #fff;
+    padding: 4px 10px; border-radius: 100px;
+    font-weight: 700; font-size: 10px;
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+
+  /* ============ RESOURCES PAGE ============ */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .resource-tile {
+    background: #fff;
+    border: 1px solid var(--gac-gray-200);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .resource-tile:hover {
+    border-color: var(--gac-blue);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  .resource-tile-icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 11px;
+    flex-shrink: 0;
+  }
+  .resource-tile-text h5 {
+    font-size: 13px; font-weight: 600;
+    color: var(--gac-gray-900);
+    line-height: 1.3;
+  }
+  .resource-tile-text p {
+    font-size: 11px; color: var(--gac-gray-500);
+    margin-top: 2px;
+  }
+
+  /* ============ SECTION HEADERS WITHIN PAGES ============ */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 32px 0 16px;
+  }
+  .section-header h3 {
+    font-size: 18px; font-weight: 700;
+    color: var(--gac-gray-900);
+    letter-spacing: -.01em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-header .accent-bar {
+    width: 4px; height: 20px;
+    background: var(--gac-red); border-radius: 2px;
+  }
+
+  /* ============ FILTER PILLS ============ */
+  .filter-pills {
+    display: flex; gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-pill {
+    padding: 6px 14px; border-radius: 100px;
+    background: #fff;
+    border: 1px solid var(--gac-gray-200);
+    color: var(--gac-gray-600);
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: inherit;
+  }
+  .filter-pill:hover { border-color: var(--gac-blue); color: var(--gac-blue); }
+  .filter-pill.active {
+    background: var(--gac-blue); color: #fff;
+    border-color: var(--gac-blue);
+  }
+
+  /* ============ SUPPLY CHAIN HUB ============ */
+  .sc-hero {
+    background:
+      linear-gradient(135deg, rgba(0,46,112,.95) 0%, rgba(0,64,160,.85) 100%);
+    color: #fff;
+    padding: 32px;
+    border-radius: var(--radius-xl);
+    margin-bottom: 24px;
+    position: relative; overflow: hidden;
+  }
+  .sc-hero::after {
+    content: "DRILLTRAC";
+    position: absolute; right: -20px; bottom: -40px;
+    font-size: 140px; font-weight: 900;
+    color: rgba(255,255,255,.04);
+    letter-spacing: -.04em;
+  }
+  .sc-hero-eyebrow {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .12em;
+    color: var(--gac-red); margin-bottom: 12px;
+  }
+  .sc-hero h2 {
+    font-size: 32px; font-weight: 800;
+    letter-spacing: -.02em; line-height: 1.1;
+    max-width: 600px;
+  }
+  .sc-hero p { margin-top: 12px; opacity: .9; max-width: 600px; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 768px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    border: 1px solid var(--gac-gray-200);
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gac-blue);
+  }
+  .stat-card:nth-child(2)::before { background: var(--gac-red); }
+  .stat-card:nth-child(3)::before { background: var(--gac-amber); }
+  .stat-card:nth-child(4)::before { background: var(--gac-green); }
+  .stat-card .stat-label {
+    font-size: 11px; font-weight: 700;
+    color: var(--gac-gray-500);
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .stat-card .stat-value {
+    font-size: 28px; font-weight: 800;
+    color: var(--gac-gray-900);
+    letter-spacing: -.02em; margin-top: 4px;
+  }
+  .stat-card .stat-trend {
+    font-size: 11px; font-weight: 600;
+    margin-top: 6px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .stat-trend.up { color: #047857; }
+  .stat-trend.down { color: var(--gac-red-dark); }
+
+  /* Mobile adjustments */
+  @media (max-width: 640px) {
+    .suite-bar { padding: 0 8px; }
+    .site-header { padding: 12px 16px; flex-wrap: wrap; gap: 12px; }
+    .site-nav { padding: 0 16px; }
+    .main { padding: 16px; }
+    .hero { padding: 24px; min-height: 240px; }
+    .hero h2 { font-size: 24px; }
+    .hero-stats { display: none; }
+    .news-grid { grid-template-columns: 1fr; }
+    .quick-links { grid-template-columns: repeat(2, 1fr); }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- M365 Suite Bar -->
+<div class="suite-bar">
+  <div class="suite-bar-left">
+    <div class="waffle" title="App launcher">
+      <div class="waffle-grid">
+        <div class="waffle-dot"></div><div class="waffle-dot"></div><div class="waffle-dot"></div>
+        <div class="waffle-dot"></div><div class="waffle-dot"></div><div class="waffle-dot"></div>
+        <div class="waffle-dot"></div><div class="waffle-dot"></div><div class="waffle-dot"></div>
+      </div>
+    </div>
+    <div class="suite-brand"><span class="gac">GAC</span> <span class="hub">Hub</span></div>
+  </div>
+  <div class="suite-search">
+    <input type="text" placeholder="Search GAC Hub — projects, people, files, yards…">
+    <svg class="suite-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+  </div>
+  <div class="suite-bar-right">
+    <div class="suite-icon-btn" title="Notifications">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <span class="badge">3</span>
+    </div>
+    <div class="suite-icon-btn" title="Help">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+    </div>
+    <div class="suite-icon-btn" title="Settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+    </div>
+    <div class="suite-avatar" title="Carlos Siliezar">CS</div>
+  </div>
+</div>
+
+<!-- Site Header -->
+<div class="site-header">
+  <div class="site-identity">
+    <div class="site-logo">GAC</div>
+    <div class="site-title">
+      <h1>GAC LLC Company Hub</h1>
+      <p>Directional Drilling • Fiber Installation • 14 Yards Strong</p>
+    </div>
+  </div>
+  <div class="site-actions">
+    <button class="pill-btn" onclick="alert('Following GAC Hub')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+      Follow
+    </button>
+    <button class="pill-btn" onclick="alert('Pinned to nav')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
+      Pin
+    </button>
+    <button class="pill-btn primary" onclick="alert('New post window opens')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      New post
+    </button>
+  </div>
+</div>
+
+<!-- Site Navigation -->
+<nav class="site-nav">
+  <button class="nav-item active" onclick="showPage('home', this)">Home</button>
+  <button class="nav-item" onclick="showPage('news', this)">News &amp; Updates</button>
+  <button class="nav-item" onclick="showPage('depts', this)">Departments</button>
+  <button class="nav-item" onclick="showPage('yards', this)">Yards</button>
+  <button class="nav-item" onclick="showPage('projects', this)">Projects</button>
+  <button class="nav-item" onclick="showPage('safety', this)">Safety Center</button>
+  <button class="nav-item" onclick="showPage('supply', this)">Supply Chain</button>
+  <button class="nav-item" onclick="showPage('resources', this)">Resources</button>
+</nav>
+
+<div class="main">
+
+<!-- ========================= HOME PAGE ========================= -->
+<div class="page active" id="page-home">
+
+  <!-- Safety alert banner -->
+  <div class="alert-banner">
+    <div class="alert-icon">!</div>
+    <div class="alert-text">
+      <strong>SAFETY ALERT:</strong> Heat Index Advisory in effect for TX, NM &amp; SC yards through Friday. Hydration breaks every 60 min.
+    </div>
+    <a class="alert-action" onclick="showPage('safety', null)">Read protocol →</a>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-pattern"></div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">847</div>
+        <div class="hero-stat-label">Days No Lost-Time</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">14</div>
+        <div class="hero-stat-label">Active Yards</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">12</div>
+        <div class="hero-stat-label">Live Projects</div>
+      </div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="pulse"></span>
+        Welcome back, Carlos
+      </div>
+      <h2>Building America's fiber backbone, one bore at a time.</h2>
+      <p>Your hub for everything GAC — projects, people, safety, and the systems that keep us moving across 14 yards.</p>
+      <div class="hero-actions">
+        <button class="hero-btn primary" onclick="showPage('projects', null)">
+          View active projects
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+        <button class="hero-btn ghost" onclick="showPage('supply', null)">
+          Open DrillTrac
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two column layout -->
+  <div class="two-col">
+    <div>
+      <!-- News -->
+      <div class="webpart">
+        <div class="webpart-header">
+          <div class="webpart-title">
+            <span class="accent-bar"></span>
+            Latest News
+          </div>
+          <a class="webpart-link" onclick="showPage('news', null)">See all news →</a>
+        </div>
+        <div class="news-grid">
+          <div class="news-card featured">
+            <div class="news-image var-1">
+              <div class="news-cat ops">Operations</div>
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 22h20"/><path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l4-2 6 11"/><path d="m18 14 2-1.09a2 2 0 0 0 .9-1.66V8.6a2 2 0 0 0-.9-1.66L19 6l-2 1-2-1-2 1-1-1-2 1L6 6 4 7l1.5 1.4"/></svg>
+            </div>
+            <div class="news-body">
+              <h4>PRJ-2245 ahead of schedule — Mt Pleasant crew wraps Phase 2 four days early</h4>
+              <p>Strong performance from the Mt Pleasant team brings PRJ-2245 ahead of plan. Shoutout to Foreman Reyes and crew for the clean execution on the Hwy 271 bore.</p>
+              <div class="news-meta">
+                <strong>Operations</strong> • Posted 2 hours ago
+              </div>
+            </div>
+          </div>
+          <div class="news-card">
+            <div class="news-image var-3">
+              <div class="news-cat hr">HR</div>
+            </div>
+            <div class="news-body">
+              <h4>Open enrollment runs Nov 1–15</h4>
+              <p>Benefits guide is live in the Resources section.</p>
+              <div class="news-meta">Posted yesterday</div>
+            </div>
+          </div>
+          <div class="news-card">
+            <div class="news-image var-4">
+              <div class="news-cat event">Event</div>
+            </div>
+            <div class="news-body">
+              <h4>All-hands quarterly Aug 30</h4>
+              <p>Virtual via Teams. Calendar invite went out Monday.</p>
+              <div class="news-meta">Posted 3 days ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="webpart">
+        <div class="webpart-header">
+          <div class="webpart-title">
+            <span class="accent-bar"></span>
+            Quick Links
+          </div>
+          <a class="webpart-link">Customize →</a>
+        </div>
+        <div class="quick-links">
+          <a class="quick-link"><div class="quick-link-icon ql-bg-1">D</div><div class="quick-link-label">DrillTrac</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-2">A</div><div class="quick-link-label">Asana</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-3">J</div><div class="quick-link-label">Jotform Tracker</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-4">P</div><div class="quick-link-label">Payroll &amp; HR</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-5">E</div><div class="quick-link-label">Expense Reports</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-6">F</div><div class="quick-link-label">Fleet &amp; Trucks</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-7">S</div><div class="quick-link-label">Safety Forms</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-8">T</div><div class="quick-link-label">Time Off Request</div></a>
+        </div>
+      </div>
+
+      <!-- Active Projects -->
+      <div class="webpart">
+        <div class="webpart-header">
+          <div class="webpart-title">
+            <span class="accent-bar"></span>
+            Active Projects
+          </div>
+          <a class="webpart-link" onclick="showPage('projects', null)">All projects →</a>
+        </div>
+        <table class="proj-table">
+          <thead><tr><th>ID</th><th>Project</th><th>Yard</th><th>Status</th><th>Progress</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="proj-id">PRJ-2245</span></td>
+              <td><span class="proj-name">Hwy 271 Fiber Backbone</span></td>
+              <td>Mt Pleasant TX</td>
+              <td><span class="proj-status active"><span class="dot"></span>On Track</span></td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="proj-id">PRJ-2241</span></td>
+              <td><span class="proj-name">Greensboro Last-Mile Build</span></td>
+              <td>Greensboro NC</td>
+              <td><span class="proj-status active"><span class="dot"></span>On Track</span></td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="proj-id">PRJ-2238</span></td>
+              <td><span class="proj-name">ABQ Metro Loop Phase 3</span></td>
+              <td>Albuquerque NM</td>
+              <td><span class="proj-status delayed"><span class="dot"></span>Weather Hold</span></td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:41%"></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="proj-id">PRJ-2199</span></td>
+              <td><span class="proj-name">Brenham Trunk Install</span></td>
+              <td>Brenham TX</td>
+              <td><span class="proj-status planning"><span class="dot"></span>Pre-Mobilize</span></td>
+              <td><div class="progress-bar"><div class="progress-fill" style="width:15%"></div></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div>
+      <div class="sidebar-card">
+        <div class="sidebar-title"><span class="sidebar-title-bar"></span>Upcoming Events</div>
+        <div class="event-item">
+          <div class="event-date"><div class="month">Aug</div><div class="day">14</div></div>
+          <div class="event-info"><h5>Toolbox Talk: Heat Stress</h5><p>All yards • 7:00 AM local</p></div>
+        </div>
+        <div class="event-item">
+          <div class="event-date"><div class="month">Aug</div><div class="day">19</div></div>
+          <div class="event-info"><h5>Foreman Roundtable</h5><p>Virtual via Teams • 3 PM CT</p></div>
+        </div>
+        <div class="event-item">
+          <div class="event-date"><div class="month">Aug</div><div class="day">22</div></div>
+          <div class="event-info"><h5>Q3 Safety Audit — Fort Worth</h5><p>12021 Jacksboro Hwy</p></div>
+        </div>
+        <div class="event-item">
+          <div class="event-date"><div class="month">Aug</div><div class="day">30</div></div>
+          <div class="event-info"><h5>All-Hands Quarterly</h5><p>Virtual via Teams • 1 PM CT</p></div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title"><span class="sidebar-title-bar"></span>People to Know</div>
+        <div class="person-item">
+          <div class="person-avatar pa-1">CS</div>
+          <div class="person-info"><h5>Carlos Siliezar</h5><p>Chief Executive Officer</p></div>
+        </div>
+        <div class="person-item">
+          <div class="person-avatar pa-2">JM</div>
+          <div class="person-info"><h5>James Martinez</h5><p>Supply Chain Manager</p></div>
+        </div>
+        <div class="person-item">
+          <div class="person-avatar pa-3">RR</div>
+          <div class="person-info"><h5>Roberto Reyes</h5><p>Foreman, Mt Pleasant</p></div>
+        </div>
+        <div class="person-item">
+          <div class="person-avatar pa-4">DT</div>
+          <div class="person-info"><h5>Diana Torres</h5><p>Safety Coordinator</p></div>
+        </div>
+        <div class="person-item">
+          <div class="person-avatar pa-5">MW</div>
+          <div class="person-info"><h5>Mark Whitfield</h5><p>Operations Director</p></div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title"><span class="sidebar-title-bar"></span>Recent Documents</div>
+        <div class="doc-item">
+          <div class="doc-icon di-excel">XLS</div>
+          <div class="doc-info"><h5>Q3 Equipment Roster</h5><p>Updated 1h ago • Fleet</p></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon di-word">DOC</div>
+          <div class="doc-info"><h5>Foreman Onboarding SOP</h5><p>Updated yesterday • Ops</p></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon di-pdf">PDF</div>
+          <div class="doc-info"><h5>2026 Benefits Summary</h5><p>Updated 3d ago • HR</p></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon di-ppt">PPT</div>
+          <div class="doc-info"><h5>All-Hands Q2 Recap</h5><p>Updated 1w ago • Exec</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= NEWS PAGE ========================= -->
+<div class="page" id="page-news">
+  <div class="page-header">
+    <div class="breadcrumb"><a onclick="showPage('home', null)">Home</a><span class="sep">›</span> News &amp; Updates</div>
+    <h2>News &amp; Updates</h2>
+    <p>Company-wide announcements, project milestones, and the things you need to know.</p>
+  </div>
+  <div class="filter-pills">
+    <button class="filter-pill active">All</button>
+    <button class="filter-pill">Operations</button>
+    <button class="filter-pill">Safety</button>
+    <button class="filter-pill">HR &amp; Benefits</button>
+    <button class="filter-pill">Projects</button>
+    <button class="filter-pill">Events</button>
+  </div>
+  <div class="webpart">
+    <div class="news-grid">
+      <div class="news-card featured">
+        <div class="news-image var-1">
+          <div class="news-cat ops">Operations</div>
+        </div>
+        <div class="news-body">
+          <h4>PRJ-2245 ahead of schedule — Mt Pleasant crew wraps Phase 2 four days early</h4>
+          <p>Strong performance from the Mt Pleasant team brings PRJ-2245 ahead of plan. The Hwy 271 bore went off without incident and the team is moving directly into Phase 3 mobilization.</p>
+          <div class="news-meta"><strong>Operations</strong> • 2 hours ago</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-image var-2"><div class="news-cat safety">Safety</div></div>
+        <div class="news-body">
+          <h4>Heat Index Advisory — TX, NM, SC</h4>
+          <p>Hydration protocol now in effect through Friday.</p>
+          <div class="news-meta">3 hours ago</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-image var-3"><div class="news-cat hr">HR</div></div>
+        <div class="news-body">
+          <h4>Open enrollment Nov 1–15</h4>
+          <p>2026 benefits are now posted in Resources.</p>
+          <div class="news-meta">Yesterday</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-image var-4"><div class="news-cat event">Event</div></div>
+        <div class="news-body">
+          <h4>All-hands quarterly — Aug 30</h4>
+          <p>Virtual via Teams. Q2 recap and Q3 outlook.</p>
+          <div class="news-meta">3 days ago</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-image var-1"><div class="news-cat ops">Operations</div></div>
+        <div class="news-body">
+          <h4>New T-04 truck commissioned in Fort Worth</h4>
+          <p>Vermeer D60x90 added to the FW fleet, on the road as of Monday.</p>
+          <div class="news-meta">4 days ago</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-image var-2"><div class="news-cat ops">Operations</div></div>
+        <div class="news-body">
+          <h4>Microsoft 365 migration kicks off Aug 3</h4>
+          <p>Pilot users go first. Watch for your wave email.</p>
+          <div class="news-meta">5 days ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= DEPARTMENTS PAGE ========================= -->
+<div class="page" id="page-depts">
+  <div class="page-header">
+    <div class="breadcrumb"><a onclick="showPage('home', null)">Home</a><span class="sep">›</span> Departments</div>
+    <h2>Departments</h2>
+    <p>Find the team, the people, and the resources for every function at GAC.</p>
+  </div>
+  <div class="dept-grid">
+    <div class="dept-card" onclick="showPage('supply', null)">
+      <div class="dept-icon">SC</div>
+      <h4>Supply Chain</h4>
+      <p>DrillTrac, inventory, material requests, returns, OpEx tracking, and PM-vs-field estimate dashboards.</p>
+      <div class="dept-meta">5 members · 12 docs · Lead: J. Martinez</div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-icon">OP</div>
+      <h4>Operations</h4>
+      <p>Project execution, foreman coordination, crew scheduling across all 14 yards.</p>
+      <div class="dept-meta">38 members · 47 docs · Lead: M. Whitfield</div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-icon">SF</div>
+      <h4>Safety</h4>
+      <p>OSHA compliance, JHA reviews, incident reporting, toolbox talks, training records.</p>
+      <div class="dept-meta">3 members · 89 docs · Lead: D. Torres</div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-icon">HR</div>
+      <h4>Human Resources</h4>
+      <p>Hiring, benefits, payroll, training, employee relations, and PTO management.</p>
+      <div class="dept-meta">4 members · 28 docs · Lead: P. Nguyen</div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-icon">FN</div>
+      <h4>Finance &amp; Accounting</h4>
+      <p>AP/AR, invoicing, project cost tracking, budgets, financial reporting.</p>
+      <div class="dept-meta">3 members · 34 docs · Lead: S. Patel</div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-icon">IT</div>
+      <h4>IT &amp; Systems</h4>
+      <p>Microsoft 365, Intune devices, network, helpdesk, business systems support.</p>
+      <div class="dept-meta">2 members · 19 docs · Lead: External (Quantum Shift)</div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-icon">FL</div>
+      <h4>Fleet &amp; Equipment</h4>
+      <p>Trucks, drills, locators, support equipment maintenance and tracking.</p>
+      <div class="dept-meta">6 members · 41 docs · Lead: R. Castillo</div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-icon">ES</div>
+      <h4>Estimating &amp; Bids</h4>
+      <p>Customer proposals, bid prep, scope review, contract management.</p>
+      <div class="dept-meta">2 members · 22 docs · Lead: K. Brennan</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= YARDS PAGE ========================= -->
+<div class="page" id="page-yards">
+  <div class="page-header">
+    <div class="breadcrumb"><a onclick="showPage('home', null)">Home</a><span class="sep">›</span> Yards</div>
+    <h2>Yard Directory</h2>
+    <p>14 locations across Texas, New Mexico, North Carolina, Virginia, and South Carolina.</p>
+  </div>
+  <div class="filter-pills">
+    <button class="filter-pill active">All Yards (14)</button>
+    <button class="filter-pill">Texas (7)</button>
+    <button class="filter-pill">New Mexico (1)</button>
+    <button class="filter-pill">North Carolina (1)</button>
+    <button class="filter-pill">Virginia (1)</button>
+    <button class="filter-pill">South Carolina (1)</button>
+  </div>
+  <div class="yard-grid">
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">North Carolina</div><div class="yard-name">Greensboro</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">8</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">2</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-2">RT</div>Rick Thompson, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">Virginia</div><div class="yard-name">Farmville</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">6</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">0</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-1">BJ</div>Brad Johnson, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">Texas — North</div><div class="yard-name">Fort Worth (Main)</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">12</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">3</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">2</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-3">CV</div>Carlos Villanueva, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">Texas — North</div><div class="yard-name">Fort Worth (Jacksboro)</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">5</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-4">EM</div>Eduardo Morales, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">New Mexico</div><div class="yard-name">Albuquerque</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">7</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">2</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-5">LG</div>Luis Gallegos, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">Texas — Central</div><div class="yard-name">Gatesville</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">4</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">0</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-2">TH</div>Travis Hayes, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">South Carolina</div><div class="yard-name">Columbia</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">5</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-1">DR</div>Devin Riley, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">Texas — Coast</div><div class="yard-name">Houston (North)</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">9</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">2</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-3">MO</div>Miguel Ortega, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">Texas — Coast</div><div class="yard-name">Houston (South)</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">6</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">0</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-4">JR</div>Jose Ramirez, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">Texas — West</div><div class="yard-name">Mineral Wells</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">5</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">0</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-5">CB</div>Cole Bennett, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">Texas — Central</div><div class="yard-name">Brenham</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">7</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">2</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-2">AS</div>Ana Solis, Yard Supervisor</div>
+      </div>
+    </div>
+    <div class="yard-card">
+      <div class="yard-header"><div class="yard-state">Texas — East</div><div class="yard-name">Mt Pleasant</div></div>
+      <div class="yard-body">
+        <div class="yard-stats">
+          <div class="yard-stat-mini"><div class="num">8</div><div class="lbl">Crew</div></div>
+          <div class="yard-stat-mini"><div class="num">2</div><div class="lbl">Trucks</div></div>
+          <div class="yard-stat-mini"><div class="num">1</div><div class="lbl">Active Proj</div></div>
+        </div>
+        <div class="yard-supervisor"><div class="person-avatar pa-1">RR</div>Roberto Reyes, Foreman</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PROJECTS PAGE ========================= -->
+<div class="page" id="page-projects">
+  <div class="page-header">
+    <div class="breadcrumb"><a onclick="showPage('home', null)">Home</a><span class="sep">›</span> Projects</div>
+    <h2>Active Projects</h2>
+    <p>Live status across all yards. Click any project to drill down.</p>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Active Projects</div>
+      <div class="stat-value">12</div>
+      <div class="stat-trend up">↑ 2 from last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Bid Value</div>
+      <div class="stat-value">$8.4M</div>
+      <div class="stat-trend up">↑ 14% YoY</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">On Track</div>
+      <div class="stat-value">9</div>
+      <div class="stat-trend up">75% of pipeline</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Needs Attention</div>
+      <div class="stat-value">3</div>
+      <div class="stat-trend down">2 weather, 1 supply</div>
+    </div>
+  </div>
+  <div class="filter-pills">
+    <button class="filter-pill active">All Status</button>
+    <button class="filter-pill">On Track</button>
+    <button class="filter-pill">Pre-Mobilize</button>
+    <button class="filter-pill">Weather Hold</button>
+    <button class="filter-pill">Closeout</button>
+  </div>
+  <div class="webpart">
+    <table class="proj-table">
+      <thead><tr><th>Project ID</th><th>Customer / Scope</th><th>Yard</th><th>Foreman</th><th>Status</th><th>Progress</th><th>Target Close</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="proj-id">PRJ-2245</span></td>
+          <td><span class="proj-name">Hwy 271 Fiber Backbone</span></td>
+          <td>Mt Pleasant TX</td>
+          <td>R. Reyes</td>
+          <td><span class="proj-status active"><span class="dot"></span>On Track</span></td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div></td>
+          <td>Sep 12</td>
+        </tr>
+        <tr>
+          <td><span class="proj-id">PRJ-2241</span></td>
+          <td><span class="proj-name">Greensboro Last-Mile</span></td>
+          <td>Greensboro NC</td>
+          <td>R. Thompson</td>
+          <td><span class="proj-status active"><span class="dot"></span>On Track</span></td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div></td>
+          <td>Oct 03</td>
+        </tr>
+        <tr>
+          <td><span class="proj-id">PRJ-2238</span></td>
+          <td><span class="proj-name">ABQ Metro Loop Phase 3</span></td>
+          <td>Albuquerque NM</td>
+          <td>L. Gallegos</td>
+          <td><span class="proj-status delayed"><span class="dot"></span>Weather Hold</span></td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width:41%"></div></div></td>
+          <td>Oct 18</td>
+        </tr>
+        <tr>
+          <td><span class="proj-id">PRJ-2233</span></td>
+          <td><span class="proj-name">Houston Coastal Run</span></td>
+          <td>Houston TX (N)</td>
+          <td>M. Ortega</td>
+          <td><span class="proj-status active"><span class="dot"></span>On Track</span></td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div></td>
+          <td>Sep 28</td>
+        </tr>
+        <tr>
+          <td><span class="proj-id">PRJ-2230</span></td>
+          <td><span class="proj-name">Brenham Trunk Install (P1)</span></td>
+          <td>Brenham TX</td>
+          <td>A. Solis</td>
+          <td><span class="proj-status active"><span class="dot"></span>On Track</span></td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width:88%"></div></div></td>
+          <td>Aug 26</td>
+        </tr>
+        <tr>
+          <td><span class="proj-id">PRJ-2225</span></td>
+          <td><span class="proj-name">Columbia SC Build-Out</span></td>
+          <td>Columbia SC</td>
+          <td>D. Riley</td>
+          <td><span class="proj-status active"><span class="dot"></span>On Track</span></td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width:34%"></div></div></td>
+          <td>Nov 14</td>
+        </tr>
+        <tr>
+          <td><span class="proj-id">PRJ-2220</span></td>
+          <td><span class="proj-name">FW Industrial Park Loop</span></td>
+          <td>Fort Worth TX</td>
+          <td>C. Villanueva</td>
+          <td><span class="proj-status delayed"><span class="dot"></span>Supply Wait</span></td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width:71%"></div></div></td>
+          <td>Sep 19</td>
+        </tr>
+        <tr>
+          <td><span class="proj-id">PRJ-2199</span></td>
+          <td><span class="proj-name">Brenham Trunk (P2)</span></td>
+          <td>Brenham TX</td>
+          <td>TBD</td>
+          <td><span class="proj-status planning"><span class="dot"></span>Pre-Mobilize</span></td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width:15%"></div></div></td>
+          <td>Dec 05</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ========================= SAFETY PAGE ========================= -->
+<div class="page" id="page-safety">
+  <div class="page-header">
+    <div class="breadcrumb"><a onclick="showPage('home', null)">Home</a><span class="sep">›</span> Safety Center</div>
+    <h2>Safety Center</h2>
+    <p>OSHA compliance, JHA forms, training records, and what to do when something goes wrong.</p>
+  </div>
+  <div class="safety-counter">
+    <div class="big-num">847</div>
+    <div class="label">Days without a lost-time incident</div>
+    <div class="sub">Last incident: April 12, 2024 • Mineral Wells yard</div>
+  </div>
+
+  <div class="alert-banner">
+    <div class="alert-icon">!</div>
+    <div class="alert-text">
+      <strong>ACTIVE ADVISORY:</strong> Heat Index in TX, NM, SC. Hydration breaks every 60 min. Stop work above HI 105°F.
+    </div>
+    <a class="alert-action">View full protocol →</a>
+  </div>
+
+  <div class="section-header">
+    <h3><span class="accent-bar"></span>Quick Actions</h3>
+  </div>
+  <div class="safety-grid">
+    <div class="safety-tile danger">
+      <div class="safety-tile-icon">!</div>
+      <h4>Report an Incident</h4>
+      <p>Near-miss, injury, equipment damage, or property damage.</p>
+    </div>
+    <div class="safety-tile warning">
+      <div class="safety-tile-icon">⚑</div>
+      <h4>JHA / Pre-Job Brief</h4>
+      <p>Required before every bore. Submit via Jotform.</p>
+    </div>
+    <div class="safety-tile info">
+      <div class="safety-tile-icon">📚</div>
+      <h4>Training Library</h4>
+      <p>OSHA 10 / 30, fall protection, locate awareness.</p>
+    </div>
+    <div class="safety-tile success">
+      <div class="safety-tile-icon">✓</div>
+      <h4>Toolbox Talks</h4>
+      <p>Weekly topic library + sign-off sheets.</p>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h3><span class="accent-bar"></span>Required Reading</h3>
+  </div>
+  <div class="webpart">
+    <div class="doc-item">
+      <div class="doc-icon di-pdf">PDF</div>
+      <div class="doc-info"><h5>GAC Safety Manual 2026</h5><p>Updated Jul 2026 • Required acknowledgment annually</p></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-icon di-pdf">PDF</div>
+      <div class="doc-info"><h5>Heat Stress Prevention Protocol</h5><p>Updated Jun 2026 • Active advisory in effect</p></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-icon di-word">DOC</div>
+      <div class="doc-info"><h5>Underground Locate Procedures</h5><p>Updated Mar 2026 • Required for all locator operators</p></div>
+    </div>
+    <div class="doc-item">
+      <div class="doc-icon di-pdf">PDF</div>
+      <div class="doc-info"><h5>OSHA 1926 Subpart P (Excavation)</h5><p>Reference doc • Trenching &amp; shoring requirements</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= SUPPLY CHAIN HUB ========================= -->
+<div class="page" id="page-supply">
+  <div class="page-header">
+    <div class="breadcrumb"><a onclick="showPage('home', null)">Home</a><span class="sep">›</span><a onclick="showPage('depts', null)">Departments</a><span class="sep">›</span> Supply Chain</div>
+  </div>
+
+  <div class="sc-hero">
+    <div class="sc-hero-eyebrow">SUPPLY CHAIN COMMAND CENTER</div>
+    <h2>Built from scratch. Engineered to scale.</h2>
+    <p>DrillTrac, the asset tracker, material requests, returns, and OpEx — all in one place. Your team, your tools, your numbers.</p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Open Material Requests</div>
+      <div class="stat-value">23</div>
+      <div class="stat-trend up">↑ 6 this week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Inventory Across Yards</div>
+      <div class="stat-value">$1.2M</div>
+      <div class="stat-trend up">Tracked in DrillTrac</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Partial Reels</div>
+      <div class="stat-value">47</div>
+      <div class="stat-trend up">↑ Reclaimed $34K</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">OpEx YTD</div>
+      <div class="stat-value">$2.8M</div>
+      <div class="stat-trend down">↓ 4% vs budget</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="webpart">
+        <div class="webpart-header">
+          <div class="webpart-title"><span class="accent-bar"></span>Quick Actions</div>
+        </div>
+        <div class="quick-links">
+          <a class="quick-link"><div class="quick-link-icon ql-bg-1">D</div><div class="quick-link-label">Open DrillTrac</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-2">M</div><div class="quick-link-label">Material Request</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-3">R</div><div class="quick-link-label">Return Form</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-4">I</div><div class="quick-link-label">Inventory Lookup</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-5">T</div><div class="quick-link-label">Truck/Jobsite</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-7">P</div><div class="quick-link-label">Partial Reel Log</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-6">F</div><div class="quick-link-label">Field Estimate</div></a>
+          <a class="quick-link"><div class="quick-link-icon ql-bg-8">$</div><div class="quick-link-label">OpEx Dashboard</div></a>
+        </div>
+      </div>
+
+      <div class="webpart">
+        <div class="webpart-header">
+          <div class="webpart-title"><span class="accent-bar"></span>Recent Material Requests</div>
+          <a class="webpart-link">View all →</a>
+        </div>
+        <table class="proj-table">
+          <thead><tr><th>Request</th><th>Yard</th><th>Project</th><th>Status</th><th>Submitted</th></tr></thead>
+          <tbody>
+            <tr><td><span class="proj-id">MR-1842</span></td><td>Mt Pleasant</td><td>PRJ-2245</td><td><span class="proj-status active"><span class="dot"></span>Approved</span></td><td>Today</td></tr>
+            <tr><td><span class="proj-id">MR-1841</span></td><td>Albuquerque</td><td>PRJ-2238</td><td><span class="proj-status planning"><span class="dot"></span>In Review</span></td><td>Today</td></tr>
+            <tr><td><span class="proj-id">MR-1840</span></td><td>Brenham</td><td>PRJ-2230</td><td><span class="proj-status complete"><span class="dot"></span>Fulfilled</span></td><td>Yesterday</td></tr>
+            <tr><td><span class="proj-id">MR-1839</span></td><td>Houston (N)</td><td>PRJ-2233</td><td><span class="proj-status delayed"><span class="dot"></span>Backorder</span></td><td>Yesterday</td></tr>
+            <tr><td><span class="proj-id">MR-1838</span></td><td>Greensboro</td><td>PRJ-2241</td><td><span class="proj-status active"><span class="dot"></span>Approved</span></td><td>2d ago</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="sidebar-card">
+        <div class="sidebar-title"><span class="sidebar-title-bar"></span>Team</div>
+        <div class="person-item">
+          <div class="person-avatar pa-2">JM</div>
+          <div class="person-info"><h5>James Martinez</h5><p>Supply Chain Manager</p></div>
+        </div>
+        <div class="person-item">
+          <div class="person-avatar pa-1">SK</div>
+          <div class="person-info"><h5>Sarah Kim</h5><p>Supply Chain Analyst</p></div>
+        </div>
+        <div class="person-item">
+          <div class="person-avatar pa-3">JD</div>
+          <div class="person-info"><h5>Jorge Diaz</h5><p>Inventory Coordinator</p></div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title"><span class="sidebar-title-bar"></span>SOPs &amp; Forms</div>
+        <div class="doc-item">
+          <div class="doc-icon di-word">DOC</div>
+          <div class="doc-info"><h5>Material Request SOP</h5><p>v2.3 • Updated last week</p></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon di-word">DOC</div>
+          <div class="doc-info"><h5>Returns &amp; Reclaim SOP</h5><p>v1.8 • Updated 2 weeks ago</p></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon di-excel">XLS</div>
+          <div class="doc-info"><h5>Reorder Point Calculator</h5><p>Updated monthly</p></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon di-pdf">PDF</div>
+          <div class="doc-info"><h5>Vendor Master List</h5><p>v6 • Updated quarterly</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= RESOURCES PAGE ========================= -->
+<div class="page" id="page-resources">
+  <div class="page-header">
+    <div class="breadcrumb"><a onclick="showPage('home', null)">Home</a><span class="sep">›</span> Resources</div>
+    <h2>Resources &amp; Forms</h2>
+    <p>Everything you need in one place — forms, policies, training, and tools.</p>
+  </div>
+
+  <div class="section-header">
+    <h3><span class="accent-bar"></span>HR &amp; Benefits</h3>
+  </div>
+  <div class="resource-grid">
+    <div class="resource-tile"><div class="resource-tile-icon di-pdf">PDF</div><div class="resource-tile-text"><h5>2026 Benefits Guide</h5><p>Open enrollment Nov 1–15</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-word">DOC</div><div class="resource-tile-text"><h5>PTO Request Form</h5><p>Submit 2 weeks ahead</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-pdf">PDF</div><div class="resource-tile-text"><h5>Employee Handbook</h5><p>Last updated Jan 2026</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-word">DOC</div><div class="resource-tile-text"><h5>W-4 Update Form</h5><p>For tax withholding changes</p></div></div>
+  </div>
+
+  <div class="section-header">
+    <h3><span class="accent-bar"></span>Operations &amp; Field</h3>
+  </div>
+  <div class="resource-grid">
+    <div class="resource-tile"><div class="resource-tile-icon di-pdf">PDF</div><div class="resource-tile-text"><h5>JHA Template</h5><p>Pre-job brief required</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-word">DOC</div><div class="resource-tile-text"><h5>Daily Production Report</h5><p>Submit end-of-shift</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-excel">XLS</div><div class="resource-tile-text"><h5>Bore Log Template</h5><p>Per-shot record</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-pdf">PDF</div><div class="resource-tile-text"><h5>Locator Operator Guide</h5><p>Reference manual</p></div></div>
+  </div>
+
+  <div class="section-header">
+    <h3><span class="accent-bar"></span>Finance &amp; Expense</h3>
+  </div>
+  <div class="resource-grid">
+    <div class="resource-tile"><div class="resource-tile-icon di-word">DOC</div><div class="resource-tile-text"><h5>Expense Report</h5><p>Receipts within 30 days</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-word">DOC</div><div class="resource-tile-text"><h5>Mileage Log</h5><p>2026 IRS rate: $0.67/mi</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-pdf">PDF</div><div class="resource-tile-text"><h5>Per Diem Policy</h5><p>By state and assignment</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-excel">XLS</div><div class="resource-tile-text"><h5>Project Cost Tracker</h5><p>By PRJ ID</p></div></div>
+  </div>
+
+  <div class="section-header">
+    <h3><span class="accent-bar"></span>IT &amp; Microsoft 365</h3>
+  </div>
+  <div class="resource-grid">
+    <div class="resource-tile"><div class="resource-tile-icon di-pdf">PDF</div><div class="resource-tile-text"><h5>M365 Migration Schedule</h5><p>Your wave date</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-pdf">PDF</div><div class="resource-tile-text"><h5>Outlook Quick Reference</h5><p>Switching from Gmail</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-pdf">PDF</div><div class="resource-tile-text"><h5>Teams Quick Reference</h5><p>Switching from Google Chat</p></div></div>
+    <div class="resource-tile"><div class="resource-tile-icon di-word">DOC</div><div class="resource-tile-text"><h5>IT Support Ticket Form</h5><p>Or call x1500</p></div></div>
+  </div>
+</div>
+
+</div>
+<!-- end .main -->
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h5>About GAC</h5>
+      <a>Our Story</a>
+      <a>Leadership</a>
+      <a>Careers</a>
+      <a>Contact</a>
+    </div>
+    <div class="footer-col">
+      <h5>Quick Access</h5>
+      <a onclick="showPage('supply', null)">DrillTrac</a>
+      <a onclick="showPage('safety', null)">Safety Center</a>
+      <a onclick="showPage('yards', null)">Yard Directory</a>
+      <a onclick="showPage('resources', null)">Forms &amp; Resources</a>
+    </div>
+    <div class="footer-col">
+      <h5>Get Help</h5>
+      <a>IT Helpdesk</a>
+      <a>HR Questions</a>
+      <a>Report an Incident</a>
+      <a>Suggest an Idea</a>
+    </div>
+    <div class="footer-col">
+      <h5>Connect</h5>
+      <a>Microsoft Teams</a>
+      <a>Outlook</a>
+      <a>OneDrive</a>
+      <a>Asana</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 GAC LLC. All rights reserved.</div>
+    <div class="demo-tag">SharePoint Mockup • Not Live</div>
+  </div>
+</footer>
+
+<script>
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (btn) {
+      btn.classList.add('active');
+    } else {
+      // find matching nav item
+      const navMap = { home: 0, news: 1, depts: 2, yards: 3, projects: 4, safety: 5, supply: 6, resources: 7 };
+      const navItems = document.querySelectorAll('.nav-item');
+      if (navMap[id] !== undefined) navItems[navMap[id]].classList.add('active');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
